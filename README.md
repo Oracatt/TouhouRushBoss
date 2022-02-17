@@ -6,9 +6,9 @@
  * 下载东方RushBoss可执行程序，里面有程序需要用到的资源文件。[点击下载](https://tapcat.top/Project/TouhouRushBoss/thrb.aspx)
  * 下载以下程序编译所需的SDK（暂不开源）。
  
- VirtualLib:[点击下载](http://download.tapcat.top/VirtualLib/VirtualLib.zip)
+ VirtualLib:[点击下载](https://download.tapcat.top/VirtualLib/VirtualLib.zip)
 
- ManagedStream:[点击下载](http://download.tapcat.top/ManagedStream/ManagedStream.zip)
+ ManagedStream:[点击下载](https://download.tapcat.top/ManagedStream/ManagedStream.zip)
  * 解压下载的压缩包。
 
  ### 环境配置
