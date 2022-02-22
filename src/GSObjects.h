@@ -1321,7 +1321,7 @@ public:
 			case 3:
 			{
 				focused = false;
-				scene->AttachActor(new ChangeLevel(GetStageLevel(practiceMode ? nowStage : 0), true));
+				scene->AttachActor(new ChangeLevel(GetStageLevel((practiceMode || isReplaying) ? nowStage : 0), true));
 			}
 			break;
 			}
@@ -3185,17 +3185,43 @@ public:
 
 	TextRender2D* tr;
 
+	SpriteRender* sr;
+
 	int frame;
 
-	BgmText(const wstring& bgmName) :tr(AddComponent(new TextRender2D(true))), frame(0)
+	ComPtr<IRenderTarget> target;
+
+	BgmText(const wstring& bgmName) :tr(new TextRender2D(false)), frame(0), sr(new SpriteRender)
 	{
-		SetUpdateLevel(1);
+		transform->scale = { 640,480,1 };
 		transform2D->location = { 320,488 };
 		tr->SetOutlineWidth(2);
 		tr->SetOutlineEnabled(true);
 		tr->SetTextFormat(tf_youyuan.Get());
 		tr->SetRect({ -160,0,160,100 });
 		tr->SetText(L"BGM:" + bgmName);
+
+		RenderTargetDesc desc;
+		desc.width = 640;
+		desc.height = 480;
+		desc.msaaEnabled = false;
+		desc.support2D = true;
+		desc.hasDepth = true;
+		desc.multiSampleCount = 0;
+		engine->CreateRenderTarget(desc, &target);
+
+		AddComponent(new RenderTargetSet::Setter(target.Get(), 0, true));
+		AddComponent(tr);
+		AddComponent(new RenderTargetSet::Setter(GameSceneCom::gameTarget.Get(), 0, false));
+
+		Material mat;
+		mat.diffuse = { 1,1,1,1 };
+		mat.ambient = { 0,0,0,0 };
+		mat.specular = { 0,0,0,0 };
+		mat.power = 0;
+		sr->SetMaterial(mat);
+		sr->SetTexture(target.Get());
+		AddComponent(sr);
 	}
 
 	void OnCreated() override
@@ -3205,27 +3231,24 @@ public:
 
 	void OnUpdate() override
 	{
-		if (timer->GetTimeStopLevel() == 0)
+		frame++;
+		if (frame < 20)
 		{
-			tr->SetActive(true);
-			frame++;
-			if (frame < 20)
-			{
-				transform2D->location.y -= 1.5;
-			}
-			if (frame > 150)
-			{
-				transform2D->location.y += 1.5;
-			}
-			if (frame == 200)
-			{
-				Destroy();
-			}
+			transform2D->location.y -= 1.5;
 		}
-		else
+		if (frame > 150)
 		{
-			tr->SetActive(false);
+			transform2D->location.y += 1.5;
 		}
+		if (frame == 200)
+		{
+			Destroy();
+		}
+	}
+
+	void OnDestroy() override
+	{
+		target.Reset();
 	}
 };
 
