@@ -194,6 +194,7 @@ void UnloadLevelResource(LevelType ecp)
 	}
 	if (ecp != LEVEL_GRASSLAND)
 	{
+		bgm_grassland.Reset();
 		src_grassland.Reset();
 		src_leaf.Reset();
 		src_light.Reset();
