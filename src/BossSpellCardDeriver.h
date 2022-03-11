@@ -1116,7 +1116,7 @@ class Artia_SC_8 :public BossSpellCard
 			{
 				int srcIndex = i / 2;
 				int dstIndex = (srcIndex + ((i % 2 == 0) ? 1 : 2)) % 3;
-				laser[i] = scene->AttachActor(new Laser);
+				laser[i] = new Laser;
 				laser[i]->cleanOnHit = false;
 				laser[i]->cleanOnBomb = false;
 				laser[i]->cleanOnOutOfRange = false;
@@ -1125,6 +1125,7 @@ class Artia_SC_8 :public BossSpellCard
 				laser[i]->length = (guangYu[dstIndex]->transform->location - guangYu[srcIndex]->transform->location).GetLength();
 				laser[i]->width = 1;
 				laser[i]->angle = GetAngle(guangYu[dstIndex]->transform->location - guangYu[srcIndex]->transform->location);
+				scene->AttachActor(laser[i].Get());
 			}
 		}
 
@@ -2599,6 +2600,7 @@ class Monstone_SC_9 :public BossSpellCard
 					scene->AttachActor(new EnemyBulletFog(d));
 				}
 				se_tan00.Play();
+				GameSceneCom::gamecam->Shake(30, 16);
 			}
 			if (frame == 240)
 			{
@@ -2661,6 +2663,7 @@ public:
 	{
 		se_enep00.Play();
 		CleanAuto(CLEAN_FINALSPELL, boss->transform->location);
+		boss->SetEnemyFlags(boss->GetEnemyFlags() & ~EnemyFlag::EF_Checking);
 	}
 
 	void OnBossSpellEnd() override
